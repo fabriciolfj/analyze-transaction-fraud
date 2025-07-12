@@ -36,7 +36,7 @@ spring:
           multiplier: 2
           max-attempts: 3
   datasource:
-    url: jdbc:postgresql://localhost:5452/fraud_db
+    url: jdbc:postgresql://localhost:5432/fraud_db
     password: postgres
     username: postgres
     driverClassName: org.postgresql.Driver
