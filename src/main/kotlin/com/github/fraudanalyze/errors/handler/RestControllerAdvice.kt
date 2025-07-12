@@ -43,10 +43,9 @@ class RestControllerAdvice(private val messageSource: MessageSource) {
 
     private fun mappingError(e: ConstraintViolationException): List<ErrorDetailsDTO> {
         return e.constraintViolations
-            .stream()
             .map { obj ->
                 val name = if (obj is FieldError) {
-                    (obj as FieldError).field
+                    obj.field
                 } else {
                     obj.propertyPath.toString()
                 }
@@ -57,7 +56,6 @@ class RestControllerAdvice(private val messageSource: MessageSource) {
 
     private fun mappingError(e: MethodArgumentNotValidException): List<ErrorDetailsDTO> {
         return e.bindingResult.allErrors
-            .stream()
             .map { obj ->
                 val name = if (obj is FieldError) {
                     obj.field
