@@ -13,6 +13,7 @@ CREATE SEQUENCE IF NOT EXISTS transactions_id_seq
 -- Criar tabela transactions
 CREATE TABLE IF NOT EXISTS transactions (
     id BIGINT PRIMARY KEY DEFAULT nextval('transactions_id_seq'),
+    code VARCHAR(255) NOT NULL,
     customer_id VARCHAR(255) NOT NULL,
     card_number VARCHAR(20) NOT NULL,
     merchant_name VARCHAR(255) NOT NULL,
@@ -25,7 +26,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 -- Criar índices para performance
-CREATE INDEX IF NOT EXISTS idx_transactions_customer_id ON transactions(customer_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_customer_code ON transactions(code);
 CREATE INDEX IF NOT EXISTS idx_transactions_transaction_date ON transactions(transaction_date);
 CREATE INDEX IF NOT EXISTS idx_transactions_fraud_status ON transactions(fraud_status);
 CREATE INDEX IF NOT EXISTS idx_transactions_customer_date ON transactions(customer_id, transaction_date DESC);

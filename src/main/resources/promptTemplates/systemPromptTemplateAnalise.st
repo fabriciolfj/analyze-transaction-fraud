@@ -7,7 +7,7 @@ TRANSAÇÃO ATUAL:
 {TRANSACAO}
 
 CRITÉRIOS DE ANÁLISE:
-1. PADRÃO DE VALOR: Compare com média histórica do cliente
+1. PADRÃO DE VALOR: Compare com média histórica do cliente por numero do cartao
 2. PADRÃO TEMPORAL: Horários habituais vs horário atual
 3. PADRÃO GEOGRÁFICO: Localizações frequentes vs atual
 4. PADRÃO DE MERCHANT: Tipos de estabelecimentos habituais
@@ -15,7 +15,6 @@ CRITÉRIOS DE ANÁLISE:
 
 FATORES DE RISCO ALTO:
 - Valores 3x acima da média histórica
-- Transações em países diferentes em <6h
 - Horários atípicos (madrugada) para o perfil
 - Merchants de categorias nunca utilizadas
 - Múltiplas transações simultâneas

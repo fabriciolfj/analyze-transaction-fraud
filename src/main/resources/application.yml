@@ -54,3 +54,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+rabbitmq:
+  analyse:
+    queue: analyse-transaction
+    dlq:  analyse-transaction-dlq

@@ -10,6 +10,8 @@ data class TransactionData(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
+    @Column(name = "code", nullable = false)
+    var code: String,
     @Column(name = "customer_id", nullable = false)
     var customerId: String,
     @Column(name = "card_number", nullable = false, length = 20)
