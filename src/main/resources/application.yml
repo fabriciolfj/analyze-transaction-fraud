@@ -1,0 +1,56 @@
+server:
+  shutdown: graceful
+  tomcat:
+    connection-timeout: 5s
+    keep-alive-timeout: 15s
+    accept-count: 100
+    threads:
+      max: 200
+      min-spare: 5
+
+spring:
+  ai:
+    vectorstore:
+      qdrant:
+        collection-name: fraud
+    anthropic:
+      chat:
+        options:
+          model: claude-3-7-sonnet-20250219
+      api-key: ${KEY}
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  application:
+    name: fraud-analyse
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    listener:
+      simple:
+        prefetch: 4
+        retry:
+          enabled: true
+          initial-interval: 10s
+          max-interval: 30s
+          multiplier: 2
+          max-attempts: 3
+  datasource:
+    url: jdbc:postgresql://localhost:5452/fraud_db
+    password: postgres
+    username: postgres
+    driverClassName: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 15
+      connection-timeout: 2000
+      idle-timeout: 1000
+  flyway:
+    locations:
+      - db/migration
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
