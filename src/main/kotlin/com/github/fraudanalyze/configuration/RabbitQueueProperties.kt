@@ -5,4 +5,7 @@ import org.springframework.context.annotation.Configuration
 
 @ConfigurationProperties(prefix = "rabbitmq.analyse")
 @Configuration
-data class RabbitQueueProperties(val queue: String, val dlq: String)
+data class RabbitQueueProperties(
+    var queue: String = "",
+    var dlq: String = ""
+)

@@ -12,6 +12,7 @@ spring:
   ai:
     vectorstore:
       qdrant:
+        initialize-schema: true
         collection-name: fraud
     anthropic:
       chat:

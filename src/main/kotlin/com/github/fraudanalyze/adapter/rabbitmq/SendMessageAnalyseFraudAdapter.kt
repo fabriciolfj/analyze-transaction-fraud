@@ -7,8 +7,10 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.annotation.Order
+import org.springframework.stereotype.Component
 
 @Order(1)
+@Component
 class SendMessageAnalyseFraudAdapter(private val rabbitMessagingTemplate: RabbitMessagingTemplate,
                                      @Value("\${rabbitmq.analyse.queue}")
                                      private val queue: String) : NotificationTransactionGateway {

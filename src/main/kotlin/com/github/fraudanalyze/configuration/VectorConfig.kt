@@ -1,6 +1,5 @@
 package com.github.fraudanalyze.configuration
 
-import org.springframework.ai.document.DocumentTransformer
 import org.springframework.ai.transformer.splitter.TokenTextSplitter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 class VectorConfig {
 
     @Bean
-    fun textSplitter(): DocumentTransformer {
+    fun textSplitter(): TokenTextSplitter {
         return TokenTextSplitter()
     }
 }

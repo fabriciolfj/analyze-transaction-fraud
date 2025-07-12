@@ -21,4 +21,8 @@ data class Transaction(val code: String,
     fun getStatusDescribe() = this.status.describe
 
     fun getMerchant() = this.location.merchantName
+
+    fun getDateTransaction() = this.dateTransaction.toLocalDate()
+
+
 }

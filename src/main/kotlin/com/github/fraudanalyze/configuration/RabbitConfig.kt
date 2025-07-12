@@ -39,5 +39,8 @@ class RabbitConfig(private val rabbitQueueProperties: RabbitQueueProperties) {
     }
 
     @Bean
-    fun binding() = BindingBuilder.bind(queueProcessAnalyse()).to(exchange())
+    fun binding() = BindingBuilder
+        .bind(queueProcessAnalyse())
+        .to(exchange())
+        .with(rabbitQueueProperties.queue)
 }

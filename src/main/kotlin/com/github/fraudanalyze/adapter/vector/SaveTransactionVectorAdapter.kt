@@ -1,5 +1,6 @@
 package com.github.fraudanalyze.adapter.vector
 
+import com.github.fraudanalyze.adapter.vector.MapTransactionMapper.toMap
 import com.github.fraudanalyze.domain.entities.Transaction
 import com.github.fraudanalyze.domain.usecases.createtransaction.NotificationTransactionGateway
 import com.github.fraudanalyze.common.utils.VectorSaveConstants.CARD_NUMBER
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component
 class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
                                    private val chatClient: ChatClient,
                                    private val textSplitter: TokenTextSplitter,
-                                   @Value("\${classpath:/promptTemplates/systemPromptTemplate.st}")
+                                   @Value("classpath:/promptTemplates/systemPromptTemplate.st")
                                    private val promptTemplate: Resource) : NotificationTransactionGateway {
 
     private val log = KotlinLogging.logger {  }
@@ -39,11 +40,7 @@ class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
 
         val result = response.entity()
         result?.let {
-            val metadata = mapOf(
-                "cardNumber" to transaction.getCard(),
-                "transactionCode" to transaction.code,
-                "transactionDate" to transaction.dateTransaction.toString(),
-            )
+            val metadata = toMap(transaction)
 
             val documents = if (result.answer.length > 1000) {
                 textSplitter.split(Document(result.answer, metadata))
