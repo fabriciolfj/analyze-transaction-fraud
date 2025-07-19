@@ -12,6 +12,14 @@ class AnalyseUseCase(private val requestAnalyseGateway: RequestAnalyseGateway,
     private val log = KotlinLogging.logger {  }
 
     fun execute(code: String) {
+        findTransactionGateway.process(code).let {
+            val result = requestAnalyseGateway.process(it)
+
+            log.info { "result analyse $result" }
+            result
+        }.also {
+            updateTransactionGateway.process(it)
+        }
 
     }
 }

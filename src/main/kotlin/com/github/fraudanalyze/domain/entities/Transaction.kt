@@ -23,6 +23,7 @@ data class Transaction(val code: String,
     fun getMerchant() = this.location.merchantName
 
     fun getDateTransaction() = this.dateTransaction.toLocalDate()
+        .toString()
 
 
 }

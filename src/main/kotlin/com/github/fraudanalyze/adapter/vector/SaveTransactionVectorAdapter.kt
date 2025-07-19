@@ -4,12 +4,7 @@ import com.github.fraudanalyze.adapter.chat.ChatClientAdapter
 import com.github.fraudanalyze.adapter.vector.MapTransactionMapper.toMap
 import com.github.fraudanalyze.domain.entities.Transaction
 import com.github.fraudanalyze.domain.usecases.createtransaction.NotificationTransactionGateway
-import com.github.fraudanalyze.common.utils.VectorSaveConstants.CARD_NUMBER
-import com.github.fraudanalyze.common.utils.VectorSaveConstants.TRANSACTION
-import com.github.fraudanalyze.common.utils.VectorSaveConstants.TRANSACTION_DATE
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.ai.chat.client.ChatClient
-import org.springframework.ai.chat.memory.ChatMemory
 import org.springframework.ai.document.Document
 import org.springframework.ai.transformer.splitter.TokenTextSplitter
 import org.springframework.ai.vectorstore.VectorStore
@@ -34,15 +29,29 @@ class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
         val result = response.entity()
         result?.let {
             val metadata = toMap(transaction)
-
-            val documents = if (result.answer.length > 1000) {
-                textSplitter.split(Document(result.answer, metadata))
-            } else {
-                listOf(Document(result.answer, metadata))
-            }
+            val enrichedContent = buildTransactionContent(transaction, result.answer)
+            val documents =  textSplitter.split(Document(enrichedContent, metadata))
 
             vectorStore.accept(documents)
             log.info { "save response ai to transaction ${transaction.code}" }
         }
+    }
+
+    private fun buildTransactionContent(transaction: Transaction, aiAnswer: String): String {
+        return """
+            CUSTOMER: ${transaction.getCustomer()}
+            CARDNUMBER: ${transaction.getCard()}
+            
+            TRANSACTION:
+            - code: ${transaction.code}
+            - amount: ${transaction.getAmount()}
+            - merchant: ${transaction.getMerchant()}
+            - location: ${transaction.getLocation()}
+            - date: ${transaction.dateTransaction}
+            - status: ${transaction.status.describe}
+            
+            ANALYSE:
+            $aiAnswer
+        """.trimIndent()
     }
 }
