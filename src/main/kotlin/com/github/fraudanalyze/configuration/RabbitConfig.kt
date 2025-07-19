@@ -6,6 +6,7 @@ import org.springframework.amqp.core.DirectExchange
 import org.springframework.amqp.core.ExchangeBuilder
 import org.springframework.amqp.core.Queue
 import org.springframework.amqp.core.QueueBuilder
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
@@ -13,7 +14,19 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class RabbitConfig(private val rabbitQueueProperties: RabbitQueueProperties) {
+class RabbitConfig(private val rabbitQueueProperties: RabbitQueueProperties,
+                   private val rabbitConfig: RabbitListenerConfig) {
+
+    @Bean
+    fun rabbitListenerContainerFactory(
+        connectionFactory: ConnectionFactory
+    ): SimpleRabbitListenerContainerFactory {
+        return SimpleRabbitListenerContainerFactory().apply {
+            setConnectionFactory(connectionFactory)
+            setConcurrentConsumers(rabbitConfig.concurrencyMin)
+            setMaxConcurrentConsumers(rabbitConfig.concurrencyMax)
+        }
+    }
 
     @Bean
     fun jackson2JsonMessageConverter(objectMapper: ObjectMapper) = Jackson2JsonMessageConverter(objectMapper)

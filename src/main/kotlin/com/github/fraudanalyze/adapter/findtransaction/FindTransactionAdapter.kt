@@ -13,8 +13,9 @@ class FindTransactionAdapter(private val transactionRepository: TransactionRepos
     private val log = KotlinLogging.logger {  }
 
     override fun process(code: String) = transactionRepository.findByCode(code)
-            ?.let {
+            ?.also {
                 log.info { "transaction found $code" }
+            }?.let {
                 toEntity(it)
             } ?: throw TransactionNotFoundException()
 }

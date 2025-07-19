@@ -5,6 +5,7 @@ import java.util.ResourceBundle
 enum class EnumErrors {
 
     TRANSACTION_NOT_FOUND,
+    CREATE_ERROR,
     CHAT_ERROR,
     STATUS_NOT_FOUND;
 

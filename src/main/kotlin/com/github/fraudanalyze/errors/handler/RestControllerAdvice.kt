@@ -2,6 +2,7 @@ package com.github.fraudanalyze.errors.handler
 
 import com.github.fraudanalyze.errors.dto.ErrorDTO
 import com.github.fraudanalyze.errors.dto.ErrorDetailsDTO
+import com.github.fraudanalyze.errors.exceptions.CreateTransactionException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
@@ -17,6 +18,15 @@ class RestControllerAdvice(private val messageSource: MessageSource) {
 
     companion object {
         private const val MESSAGE_VALIDATION = "validation field request"
+    }
+
+    @ExceptionHandler(CreateTransactionException::class)
+    fun handleCreateTransactionException(e: CreateTransactionException) : ResponseEntity<ErrorDTO> {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+            .body(
+                ErrorDTO(code = HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                    message = e.message ?: "")
+            )
     }
 
     @ExceptionHandler(ConstraintViolationException::class)

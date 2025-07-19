@@ -24,17 +24,29 @@ class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
     private val log = KotlinLogging.logger {  }
 
     override fun process(transaction: Transaction) {
-        val response = chatClientAdapter.process(promptTemplate, transaction)
-
-        val result = response.entity()
+        val result = requestAI(transaction)
         result?.let {
-            val metadata = toMap(transaction)
-            val enrichedContent = buildTransactionContent(transaction, result.answer)
-            val documents =  textSplitter.split(Document(enrichedContent, metadata))
-
-            vectorStore.accept(documents)
-            log.info { "save response ai to transaction ${transaction.code}" }
+            val documents = createDocument(transaction, it)
+            saveVector(documents, transaction)
         }
+    }
+
+    private fun saveVector(documents: MutableList<Document>, transaction: Transaction) {
+        vectorStore.accept(documents)
+            .also {
+                log.info { "save response ai to transaction ${transaction.code}" }
+            }
+    }
+
+    private fun requestAI(transaction: Transaction) : AIResponse? {
+        val result = chatClientAdapter.process(promptTemplate, transaction)
+
+        return result.entity
+    }
+
+    private fun createDocument(transaction: Transaction, result: AIResponse): MutableList<Document> {
+        val enrichedContent = buildTransactionContent(transaction, result.answer)
+        return textSplitter.split(Document(enrichedContent, toMap(transaction)))
     }
 
     private fun buildTransactionContent(transaction: Transaction, aiAnswer: String): String {
@@ -48,7 +60,7 @@ class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
             - merchant: ${transaction.getMerchant()}
             - location: ${transaction.getLocation()}
             - transactionDate: ${transaction.dateTransaction}
-            - status: ${transaction.status.describe}
+            - status: ${transaction.status.getDescribe()}
             
             ANALYSE:
             $aiAnswer

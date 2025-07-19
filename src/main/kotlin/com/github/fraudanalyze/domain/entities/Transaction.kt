@@ -18,7 +18,7 @@ data class Transaction(val code: String,
 
     fun getLocation() = location.describe
 
-    fun getStatusDescribe() = this.status.describe
+    fun getStatusDescribe() = this.status.getDescribe()
 
     fun getMerchant() = this.location.merchantName
 

@@ -7,7 +7,7 @@ object MapTransactionMapper {
     fun toMap(transaction: Transaction): Map<String, Any> = mapOf(
         "transactionCode" to transaction.code,
         "transactionDate" to transaction.dateTransaction.toString(),
-        "status" to transaction.status.describe,
+        "status" to transaction.status.getDescribe(),
         "customerCode" to transaction.getCustomer(),
         "cardNumber" to transaction.getCard(),
         "amount" to transaction.getAmount().toString(),

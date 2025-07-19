@@ -1,6 +1,9 @@
 package com.github.fraudanalyze.adapter.vector
 
 import com.github.fraudanalyze.domain.entities.Transaction
+import com.github.fraudanalyze.utils.VectorStoreFieldsUtil.CARD_NUMBER
+import com.github.fraudanalyze.utils.VectorStoreFieldsUtil.CUSTOMER_CODE
+import com.github.fraudanalyze.utils.VectorStoreFieldsUtil.TRANSACTION_DATE
 import org.springframework.ai.vectorstore.SearchRequest
 import org.springframework.ai.vectorstore.VectorStore
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder
@@ -18,8 +21,8 @@ class FindTransactionsVectorAdapter(private val vectorStore: VectorStore) {
             .similarityThreshold(0.1)
             .filterExpression(
                 FilterExpressionBuilder()
-                    .and(FilterExpressionBuilder().eq("customerCode", transaction.getCustomer()),
-                        FilterExpressionBuilder().eq("cardNumber", transaction.getCard()))
+                    .and(FilterExpressionBuilder().eq(CUSTOMER_CODE, transaction.getCustomer()),
+                        FilterExpressionBuilder().eq(CARD_NUMBER, transaction.getCard()))
 
                     .build()
             )
@@ -27,7 +30,7 @@ class FindTransactionsVectorAdapter(private val vectorStore: VectorStore) {
 
         val result = vectorStore.similaritySearch(searchRequest)
             ?.sortedByDescending { doc ->
-                LocalDateTime.parse(doc.metadata["transactionDate"]?.toString())
+                LocalDateTime.parse(doc.metadata[TRANSACTION_DATE]?.toString())
             }
             ?.take(limitTransactions) ?: emptyList()
 

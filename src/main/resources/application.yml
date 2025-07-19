@@ -58,6 +58,8 @@ spring:
 
 
 rabbitmq:
+  concurrencyMin: 4
+  concurrencyMax: 5
   analyse:
     queue: analyse-transaction
     dlq:  analyse-transaction-dlq

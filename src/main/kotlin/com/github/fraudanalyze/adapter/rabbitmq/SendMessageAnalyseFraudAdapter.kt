@@ -4,11 +4,9 @@ import com.github.fraudanalyze.adapter.rabbitmq.StartAnalyseFraudMapper.toDTO
 import com.github.fraudanalyze.domain.entities.Transaction
 import com.github.fraudanalyze.domain.usecases.createtransaction.NotificationTransactionGateway
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.annotation.Order
-import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 
 @Order(1)
@@ -20,7 +18,7 @@ class SendMessageAnalyseFraudAdapter(private val rabbitTemplate: RabbitTemplate,
     private val log = KotlinLogging.logger {  }
 
     companion object {
-        private const val DELAY_SECONDS = 10 * 1000
+        private const val DELAY_SECONDS = 10000
     }
 
     override fun process(transaction: Transaction) {

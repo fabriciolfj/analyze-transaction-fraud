@@ -20,6 +20,5 @@ class AnalyseUseCase(private val requestAnalyseGateway: RequestAnalyseGateway,
         }.also {
             updateTransactionGateway.process(it)
         }
-
     }
 }
