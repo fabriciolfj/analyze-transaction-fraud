@@ -4,6 +4,7 @@ import java.util.ResourceBundle
 
 enum class EnumErrors {
 
+    TRANSACTION_NOT_FOUND,
     STATUS_NOT_FOUND;
 
     fun getMessage() : String {

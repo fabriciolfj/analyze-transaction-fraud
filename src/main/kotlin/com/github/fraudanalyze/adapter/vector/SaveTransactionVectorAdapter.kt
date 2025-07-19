@@ -1,5 +1,6 @@
 package com.github.fraudanalyze.adapter.vector
 
+import com.github.fraudanalyze.adapter.chat.ChatClientAdapter
 import com.github.fraudanalyze.adapter.vector.MapTransactionMapper.toMap
 import com.github.fraudanalyze.domain.entities.Transaction
 import com.github.fraudanalyze.domain.usecases.createtransaction.NotificationTransactionGateway
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component
 @Order(0)
 @Component
 class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
-                                   private val chatClient: ChatClient,
+                                   private val chatClientAdapter: ChatClientAdapter,
                                    private val textSplitter: TokenTextSplitter,
                                    @Value("classpath:/promptTemplates/systemPromptTemplate.st")
                                    private val promptTemplate: Resource) : NotificationTransactionGateway {
@@ -28,15 +29,7 @@ class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
     private val log = KotlinLogging.logger {  }
 
     override fun process(transaction: Transaction) {
-        val response = chatClient.prompt()
-            .system { it.text(promptTemplate)
-                .param(TRANSACTION, transaction)
-                .param(TRANSACTION_DATE, transaction.dateTransaction)
-                .param(CARD_NUMBER, transaction.getCard())}
-            .user(transaction.getCard())
-            .advisors { it.param(ChatMemory.CONVERSATION_ID, transaction.code)}
-            .call()
-            .responseEntity(AIResponse::class.java)
+        val response = chatClientAdapter.process(promptTemplate, transaction)
 
         val result = response.entity()
         result?.let {

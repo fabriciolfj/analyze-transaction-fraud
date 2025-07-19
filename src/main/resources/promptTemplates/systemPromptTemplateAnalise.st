@@ -3,8 +3,14 @@ Você é um especialista em detecção de fraudes financeiras com 15 anos de exp
 CONTEXTO:
 Analise esta transação considerando o perfil comportamental histórico do cliente. Foque em identificar desvios significativos dos padrões normais de consumo.
 
+CARTAO
+{CARDNUMBER}
+
 TRANSAÇÃO ATUAL:
-{TRANSACAO}
+{TRANSACTION}
+
+CONTEXTO TEMPORAL:
+Data: {TRANSACTIONDATE}
 
 CRITÉRIOS DE ANÁLISE:
 1. PADRÃO DE VALOR: Compare com média histórica do cliente por numero do cartao

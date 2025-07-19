@@ -28,12 +28,30 @@ class RabbitConfig(private val rabbitQueueProperties: RabbitQueueProperties) {
     fun exchange() = ExchangeBuilder.directExchange(rabbitQueueProperties.queue).build<DirectExchange>()
 
     @Bean
-    fun queueProcessAnalyse() : Queue {
-        val args = mapOf("x-dead-letter-exchange" to "",
-                        "x-dead-letter-routing-key" to rabbitQueueProperties.dlq)
+    fun delayExchange() = ExchangeBuilder.directExchange("${rabbitQueueProperties.queue}.delay").build<DirectExchange>()
+
+    @Bean
+    fun queueProcessAnalyse(): Queue {
+        val args = mapOf(
+            "x-dead-letter-exchange" to "",
+            "x-dead-letter-routing-key" to rabbitQueueProperties.dlq
+        )
 
         return QueueBuilder
             .durable(rabbitQueueProperties.queue)
+            .withArguments(args)
+            .build()
+    }
+
+    @Bean
+    fun delayQueue(): Queue {
+        val args = mapOf(
+            "x-dead-letter-exchange" to rabbitQueueProperties.queue,
+            "x-dead-letter-routing-key" to rabbitQueueProperties.queue
+        )
+
+        return QueueBuilder
+            .durable("${rabbitQueueProperties.queue}.delay")
             .withArguments(args)
             .build()
     }
@@ -43,4 +61,10 @@ class RabbitConfig(private val rabbitQueueProperties: RabbitQueueProperties) {
         .bind(queueProcessAnalyse())
         .to(exchange())
         .with(rabbitQueueProperties.queue)
+
+    @Bean
+    fun delayBinding() = BindingBuilder
+        .bind(delayQueue())
+        .to(delayExchange())
+        .with("${rabbitQueueProperties.queue}.delay")
 }
