@@ -47,7 +47,7 @@ class SaveTransactionVectorAdapter(private val vectorStore: VectorStore,
             - amount: ${transaction.getAmount()}
             - merchant: ${transaction.getMerchant()}
             - location: ${transaction.getLocation()}
-            - date: ${transaction.dateTransaction}
+            - transactionDate: ${transaction.dateTransaction}
             - status: ${transaction.status.describe}
             
             ANALYSE:
