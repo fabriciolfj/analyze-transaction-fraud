@@ -17,8 +17,8 @@ class FindTransactionsVectorAdapter(private val vectorStore: VectorStore) {
     fun process(transaction: Transaction, limitTransactions: Int = 10): String {
         val searchRequest = SearchRequest.builder()
             .query("cliente ${transaction.getCustomer()} card ${transaction.getCard()}")
-            .topK(20)
-            .similarityThreshold(0.1)
+            .topK(20) //quantos resultados similadores
+            .similarityThreshold(0.1) // resultados com score acima de 0.1
             .filterExpression(
                 FilterExpressionBuilder()
                     .and(FilterExpressionBuilder().eq(CUSTOMER_CODE, transaction.getCustomer()),

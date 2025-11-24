@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Order(1)
 @Component
 class SendMessageAnalyseFraudAdapter(private val rabbitTemplate: RabbitTemplate,
-                                     @Value("\${rabbitmq.analyse.queue}")
+                                     @param:Value("\${rabbitmq.analyse.queue}")
                                      private val queue: String) : NotificationTransactionGateway {
 
     private val log = KotlinLogging.logger {  }
