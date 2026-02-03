@@ -35,7 +35,6 @@ spring:
           initial-interval: 10s
           max-interval: 30s
           multiplier: 2
-          max-attempts: 3
   datasource:
     url: jdbc:postgresql://localhost:5432/fraud_db
     password: postgres

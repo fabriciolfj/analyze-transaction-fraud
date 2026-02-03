@@ -8,17 +8,17 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class TransactionRequest(
-    @field:NotBlank(message = "\${customer.notfound}")
+    @field:NotBlank(message = $$"${customer.notfound}")
     val customerId: String,
 
-    @field:NotBlank(message = "\${cardNumber.notfound}")
+    @field:NotBlank(message = $$"${cardNumber.notfound}")
     val cardNumber: String,
 
-    @field:NotBlank(message = "\${merchantName.notfound}")
+    @field:NotBlank(message = $$"${merchantName.notfound}")
     val merchantName: String,
 
-    @field:NotNull(message = "\${amount.notfound}")
-    @field:Positive(message = "\${amount.invalid}")
+    @field:NotNull(message = $$"${amount.notfound}")
+    @field:Positive(message = $$"${amount.invalid}")
     val amount: BigDecimal,
 
     @field:NotNull(message = "\${transactionDate.notfound}")

@@ -1,6 +1,5 @@
 package com.github.fraudanalyze.configuration
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.DirectExchange
 import org.springframework.amqp.core.ExchangeBuilder
@@ -9,7 +8,8 @@ import org.springframework.amqp.core.QueueBuilder
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.core.RabbitAdmin
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
+import org.springframework.amqp.support.converter.JacksonJavaTypeMapper
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -25,11 +25,14 @@ class RabbitConfig(private val rabbitQueueProperties: RabbitQueueProperties,
             setConnectionFactory(connectionFactory)
             setConcurrentConsumers(rabbitConfig.concurrencyMin)
             setMaxConcurrentConsumers(rabbitConfig.concurrencyMax)
+            setMessageConverter(jacksonJsonMessageConverter())
         }
     }
 
     @Bean
-    fun jackson2JsonMessageConverter(objectMapper: ObjectMapper) = Jackson2JsonMessageConverter(objectMapper)
+    fun jacksonJsonMessageConverter() = JacksonJsonMessageConverter().apply {
+        setTypePrecedence(JacksonJavaTypeMapper.TypePrecedence.INFERRED)
+    }
 
     @Bean
     fun rabbitAdmin(connectionFactory: ConnectionFactory) = RabbitAdmin(connectionFactory)
