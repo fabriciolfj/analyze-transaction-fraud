@@ -21,7 +21,7 @@ class SendMessageAnalyseFraudAdapter(private val rabbitTemplate: RabbitTemplate,
     private val log = KotlinLogging.logger {  }
 
     companion object {
-        private const val DELAY_SECONDS = 3000
+        private const val DELAY_SECONDS = 1
     }
 
     override fun process(transaction: Transaction) {

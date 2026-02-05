@@ -5,4 +5,7 @@ object VectorStoreFieldsUtil {
     const val CUSTOMER_CODE = "customerCode"
     const val CARD_NUMBER = "cardNumber"
     const val TRANSACTION_DATE = "transactionDate"
+    const val AMOUNT = "amount"
+    const val MERCHANT = "merchant"
+    const val LOCATION = "location"
 }

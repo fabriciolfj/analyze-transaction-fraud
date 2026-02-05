@@ -4,6 +4,7 @@ import com.github.fraudanalyze.domain.entities.Transaction
 import com.github.fraudanalyze.utils.VectorStoreFieldsUtil.CARD_NUMBER
 import com.github.fraudanalyze.utils.VectorStoreFieldsUtil.CUSTOMER_CODE
 import com.github.fraudanalyze.utils.VectorStoreFieldsUtil.TRANSACTION_DATE
+import org.springframework.ai.document.Document
 import org.springframework.ai.vectorstore.SearchRequest
 import org.springframework.ai.vectorstore.VectorStore
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder
@@ -14,7 +15,13 @@ import java.util.stream.Collectors
 @Component
 class FindTransactionsVectorAdapter(private val vectorStore: VectorStore) {
 
-    fun process(transaction: Transaction, limitTransactions: Int = 10): String {
+    fun process(transaction: Transaction, limitTransactions: Int = 10) : String {
+        val result = processDocuments(transaction, limitTransactions)
+
+        return result.stream().filter {it.text != null }.map { it.text }.collect(Collectors.joining(System.lineSeparator())) ?: ""
+    }
+
+    fun processDocuments(transaction: Transaction, limitTransactions: Int = 10): List<Document> {
         val searchRequest = SearchRequest.builder()
             .query("cliente ${transaction.getCustomer()} card ${transaction.getCard()}")
             .topK(20) //quantos resultados similadores
@@ -28,12 +35,10 @@ class FindTransactionsVectorAdapter(private val vectorStore: VectorStore) {
             )
             .build()
 
-        val result = vectorStore.similaritySearch(searchRequest)
+        return vectorStore.similaritySearch(searchRequest)
             ?.sortedByDescending { doc ->
                 LocalDateTime.parse(doc.metadata[TRANSACTION_DATE]?.toString())
             }
             ?.take(limitTransactions) ?: emptyList()
-
-        return result.stream().filter {it.text != null }.map { it.text }.collect(Collectors.joining(System.lineSeparator())) ?: ""
     }
 }
