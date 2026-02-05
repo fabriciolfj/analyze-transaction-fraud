@@ -31,10 +31,12 @@ class RerankingAdapter(
     override fun process(transaction: Transaction) =
         runCatching {
             val documents = findTransactionsVector.processDocuments(transaction)
-            val result = documents.mapIndexed { index, document -> score(transaction, document, index) }
-                .mapNotNull { it.entity }
-                .also { logScores(it) }.maxBy { it.score }
+            if (documents.isEmpty()) {
+                log.warn { "No historical documents found for transaction=${transaction.code}" }
+                return Analyse.createDefault(transaction.code)
+            }
 
+            val result = getScoreMax(transaction, documents)
             Analyse.createAnalise(transaction.code, result.sumary, result.score)
         }.getOrElse {
             log.error { "reranking error: ${it.message}" }
@@ -84,6 +86,12 @@ class RerankingAdapter(
         doc.metadata[LOCATION]?.let { appendLine("location: $it") }
         appendLine("─────────────────────────────────────")
     }.trim()
+
+    private fun getScoreMax(transaction: Transaction, documents: List<Document>) =
+        documents.mapIndexed { index, document -> score(transaction, document, index) }
+            .mapNotNull { it.entity }
+            .also { logScores(it) }
+            .maxBy { it.score }
 
     private data class ScoredDoc(
         val sumary: String,

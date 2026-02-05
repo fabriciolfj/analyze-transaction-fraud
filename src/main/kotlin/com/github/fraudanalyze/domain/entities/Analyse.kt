@@ -14,5 +14,7 @@ data class Analyse(val transactionCode: String, val status: Status, val descript
 
             return Analyse(transactionCode, status, description)
         }
+
+        fun createDefault(transactionCode: String) = Analyse(transactionCode, Status.APPROVE, "")
     }
 }
